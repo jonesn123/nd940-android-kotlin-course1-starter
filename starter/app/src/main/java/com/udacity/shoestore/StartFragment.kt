@@ -14,7 +14,7 @@ class StartFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        setHasOptionsMenu(true)
+        (activity as? MainActivity)?.hideBackBtn()
         return DataBindingUtil.inflate<FragmentStartBinding>(
             inflater,
             R.layout.fragment_start,

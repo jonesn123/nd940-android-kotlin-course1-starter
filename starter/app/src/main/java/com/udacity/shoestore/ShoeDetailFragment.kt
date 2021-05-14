@@ -5,20 +5,31 @@ import android.view.*
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.udacity.shoestore.databinding.FragmentShoeDetailBinding
-import com.udacity.shoestore.models.Shoe
 
 class ShoeDetailFragment : Fragment() {
 
     lateinit var binding: FragmentShoeDetailBinding
+    lateinit var viewModel: ShoeDetailViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
+        viewModel = ViewModelProviders.of(this).get(ShoeDetailViewModel::class.java)
+        viewModel.error.observe(viewLifecycleOwner, { error ->
+            if (error) {
+                Toast.makeText(
+                    context,
+                    getString(R.string.toast_error),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
         binding = DataBindingUtil.inflate(
             layoutInflater,
             R.layout.fragment_shoe_detail,
@@ -26,21 +37,18 @@ class ShoeDetailFragment : Fragment() {
             false
         )
 
+        binding.viewModel = viewModel
+
         binding.cancelBtn.setOnClickListener { view ->
             view.findNavController()
                 .navigate(ShoeDetailFragmentDirections.actionShoeDetailFragmentToShoeFragment(null))
         }
         binding.saveBtn.setOnClickListener { view ->
-            if (validateInput()) {
+            val shoe = viewModel.getShoe()
+            if (shoe != null) {
                 view.findNavController().navigate(
-                    ShoeDetailFragmentDirections.actionShoeDetailFragmentToShoeFragment(createShoe())
+                    ShoeDetailFragmentDirections.actionShoeDetailFragmentToShoeFragment(shoe)
                 )
-            } else {
-                Toast.makeText(
-                    view.context,
-                    getString(R.string.toast_error),
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         }
         return binding.root
@@ -56,16 +64,5 @@ class ShoeDetailFragment : Fragment() {
             item,
             requireView().findNavController()
         ) || super.onOptionsItemSelected(item)
-    }
-
-    private fun createShoe(): Shoe = Shoe(
-        name = binding.shoeNameEt.text.toString(),
-        size = binding.shoeSizeEt.text.toString().toDouble(),
-        company = binding.shoeCompanyEt.text.toString(),
-        description = binding.shoeDescriptionEt.text.toString()
-    )
-
-    private fun validateInput(): Boolean = binding.run {
-        shoeNameEt.text.isNotEmpty() && shoeCompanyEt.text.isNotEmpty() && shoeSizeEt.text.isNotEmpty() && shoeDescriptionEt.text.isNotEmpty()
     }
 }

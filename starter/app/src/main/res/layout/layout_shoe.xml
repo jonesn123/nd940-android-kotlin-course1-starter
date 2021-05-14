@@ -13,6 +13,7 @@
 
     </data>
 
+    <!-- Because of simple layout, I would like using LinearLayout. Jus use one ViewGroup vertically -->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

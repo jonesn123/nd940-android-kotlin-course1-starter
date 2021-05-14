@@ -25,6 +25,7 @@ class WelcomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
+        (activity as? MainActivity)?.hideBackBtn()
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_welcome, container, false)
 
         binding.startBtn.setOnClickListener { view ->
