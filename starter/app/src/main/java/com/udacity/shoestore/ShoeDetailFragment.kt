@@ -5,7 +5,7 @@ import android.view.*
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.udacity.shoestore.databinding.FragmentShoeDetailBinding
@@ -13,14 +13,13 @@ import com.udacity.shoestore.databinding.FragmentShoeDetailBinding
 class ShoeDetailFragment : Fragment() {
 
     lateinit var binding: FragmentShoeDetailBinding
-    lateinit var viewModel: ShoeDetailViewModel
+    private val viewModel: ShoeDetailViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
-        viewModel = ViewModelProviders.of(this).get(ShoeDetailViewModel::class.java)
         viewModel.error.observe(viewLifecycleOwner, { error ->
             if (error) {
                 Toast.makeText(

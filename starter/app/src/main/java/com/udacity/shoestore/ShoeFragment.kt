@@ -4,14 +4,14 @@ import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.udacity.shoestore.databinding.FragmentShoeBinding
 import com.udacity.shoestore.databinding.LayoutShoeBinding
 
 class ShoeFragment : Fragment() {
-
-    lateinit var activityViewMode: ShoeViewModel
+    private val activityViewModel : ShoeViewModel by activityViewModels()
     lateinit var binding: FragmentShoeBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,8 +30,7 @@ class ShoeFragment : Fragment() {
                 .navigate(ShoeFragmentDirections.actionShoeFragmentToShoeDetailFragment())
         }
 
-        activityViewMode = (activity as MainActivity).viewModel
-        activityViewMode.shoes.observe(viewLifecycleOwner, { shoes ->
+        activityViewModel.shoes.observe(viewLifecycleOwner, { shoes ->
             binding.shoeContainer.removeAllViews()
             shoes.forEach { shoe ->
                 DataBindingUtil.inflate<LayoutShoeBinding>(
@@ -61,7 +60,7 @@ class ShoeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activityViewMode.fetchShoes()
+        activityViewModel.fetchShoes()
     }
 
     override fun onResume() {
@@ -69,7 +68,7 @@ class ShoeFragment : Fragment() {
         val args = ShoeFragmentArgs.fromBundle(requireArguments())
 
         args.shoe?.let {
-            activityViewMode.addShoe(it)
+            activityViewModel.addShoe(it)
         }
     }
 }
